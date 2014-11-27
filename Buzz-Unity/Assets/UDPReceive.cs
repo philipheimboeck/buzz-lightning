@@ -38,6 +38,8 @@ public class UDPReceive : MonoBehaviour {
 	public string lastReceivedUDPPacket="";
 	public string allReceivedUDPPackets=""; // clean up this from time to time!
 	
+
+	public Light[] lights;
 	
 	// start from shell
 	private static void Main()
@@ -57,6 +59,18 @@ public class UDPReceive : MonoBehaviour {
 	public void Start()
 	{
 		init();
+
+		lights = FindObjectsOfType(typeof(Light)) as Light[];
+
+
+				foreach(Light light in lights)
+				{
+					print(light.name);
+					light.intensity = 0; //Convert.ToSingle(text);
+					//print(" > light " + light);
+					//Debug.Log(light);
+				}
+
 	}
 	
 	// OnGUI
@@ -79,7 +93,7 @@ public class UDPReceive : MonoBehaviour {
 		print("UDPSend.init()");
 		
 		// define port
-		port = 8051;
+		port = 30000;
 		
 		// status
 		print("Sending to 127.0.0.1 : "+port);
@@ -117,7 +131,7 @@ public class UDPReceive : MonoBehaviour {
 				
 				// Den abgerufenen Text anzeigen.
 				print(">> " + text);
-				
+
 				// latest UDPpacket
 				lastReceivedUDPPacket=text;
 				
