@@ -99,7 +99,7 @@ public class UDPReceive : MonoBehaviour {
 				// latest UDPpacket
 				lastReceivedUDPPacket=text;
 
-				// Set Light Intensity
+				// Dirty: Set Light Intensity, Better: Observer Pattern or something...
 				//int serial = BitConverter.ToInt32(data, 0);
 				String distValue = lastReceivedUDPPacket.Split('p')[0];
 				int serial1 = Convert.ToInt32(distValue.Substring(1));
@@ -110,7 +110,8 @@ public class UDPReceive : MonoBehaviour {
 				print(">> PotValue: " + serial2);
 
 				String tag = lightController.serialToTag(serial2);
-				float intensity = lightController.serialToIntensity(serial2);
+				print (tag);
+				float intensity = lightController.serialToIntensity(serial1);
 				lightController.setLightIntensity(tag, intensity);
 			}
 			catch (Exception err)

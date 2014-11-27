@@ -49,7 +49,7 @@ public class LightController : MonoBehaviour {
 	public String serialToTag(int serial) {
 		int index = 0;
 		
-		index += Math.Max(0, serial * (Math.Min (light_map.Count, light_map.Count / SERIAL_MAX - 1)));
+		index += Math.Max(0,  Math.Min (light_map.Count - 1, serial * light_map.Count / SERIAL_MAX));
 		return tag_list[index];
 	}
 
