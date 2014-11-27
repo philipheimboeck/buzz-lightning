@@ -79,7 +79,7 @@ public class UDPReceive : MonoBehaviour {
 		receiveThread.Start();
 	}
 
-	private IEnumerator ReceiveData()
+	private void ReceiveData()
 	{
 		client = new UdpClient(port);
 		while (true)
@@ -101,12 +101,16 @@ public class UDPReceive : MonoBehaviour {
 
 				// Set Light Intensity
 				//int serial = BitConverter.ToInt32(data, 0);
-				String potValue = lastReceivedUDPPacket.Split('p')[0];
-				int serial1 = Convert.ToInt32(potValue.Substring(1));
-				print(">> " + serial1);
+				String distValue = lastReceivedUDPPacket.Split('p')[0];
+				int serial1 = Convert.ToInt32(distValue.Substring(1));
+				print(">> DistValue: " + serial1);
 
-				String tag = lightController.serialToTag(serial1);
-				float intensity = lightController.serialToIntensity(serial1);
+				String potValue = lastReceivedUDPPacket.Split('p')[1];
+				int serial2 = Convert.ToInt32(potValue);
+				print(">> PotValue: " + serial2);
+
+				String tag = lightController.serialToTag(serial2);
+				float intensity = lightController.serialToIntensity(serial2);
 				lightController.setLightIntensity(tag, intensity);
 			}
 			catch (Exception err)

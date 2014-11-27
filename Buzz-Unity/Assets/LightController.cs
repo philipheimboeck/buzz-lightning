@@ -7,8 +7,8 @@ public class LightController : MonoBehaviour {
 	const float INTENSITY_MIN = 0;
 	const float INTENSITY_MAX = 8;
 
-	const int SERIAL_MAX = 1023;
-	const int SERIAL_MIN = 0;
+	const int SERIAL_MAX = 100;
+	const int SERIAL_MIN = 1;
 
 	Dictionary<String, Light> light_map;
 	List<string> tag_list;
