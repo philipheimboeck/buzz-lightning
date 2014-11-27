@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using AssemblyCSharp;
 
 public class LightController : MonoBehaviour {
 	const float INTENSITY_MIN = 0;
@@ -11,6 +12,7 @@ public class LightController : MonoBehaviour {
 
 	Dictionary<String, Light> light_map;
 	List<string> tag_list;
+	ConcurrentQueue<Change> changes;
 
 	// Start from Unity 3D
 	public void Start()
@@ -24,6 +26,7 @@ public class LightController : MonoBehaviour {
 	{
 		light_map = new Dictionary<String, Light>();
 		tag_list = new List<String>();
+		changes = new ConcurrentQueue<Change>();
 
 		Light[] lights = FindObjectsOfType(typeof(Light)) as Light[];
 		foreach(Light light in lights)
@@ -56,8 +59,21 @@ public class LightController : MonoBehaviour {
 	/**
 	 * Set the light intensity
 	 */
-	public void setLightIntensity(String light_tag, int intensity) {
-		light_map[light_tag].intensity = intensity;
+	public void setLightIntensity(String light_tag, float intensity) {
+		Change change = new Change ();
+		change.Tag = light_tag;
+		change.Intensity = intensity;
+
+		changes.Enqueue (change);
+	}
+
+	public void Update() {
+		if (changes.Count > 0) 
+		{
+			Change change = changes.Dequeue();
+
+			light_map[change.Tag].intensity = change.Intensity;
+		}
 	}
 }
 

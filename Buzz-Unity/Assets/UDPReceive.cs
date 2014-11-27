@@ -33,7 +33,7 @@ public class UDPReceive : MonoBehaviour {
 	// UDPClient object
 	UdpClient client;
 
-	public int port; // define > init
+	public int port = 3000;
 	
 	// Infos
 	public string lastReceivedUDPPacket="";
@@ -58,9 +58,6 @@ public class UDPReceive : MonoBehaviour {
 	{
 		// Endpunkt definieren, von dem die Nachrichten gesendet werden.
 		print("UDPSend.init()");
-		
-		// define port
-		port = 8051;
 		
 		// status
 		print("Sending to 127.0.0.1 : "+port);
@@ -103,7 +100,6 @@ public class UDPReceive : MonoBehaviour {
 				// Set Light Intensity
 				//int serial = BitConverter.ToInt32(data, 0);
 				//String tag = lightController.serialToTag();
-
 			}
 			catch (Exception err)
 			{
