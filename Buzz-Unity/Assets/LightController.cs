@@ -10,7 +10,7 @@ public class LightController : MonoBehaviour {
 	const int SERIAL_MAX = 1023;
 	const int SERIAL_MIN = 0;
 
-	Dictionary<String, Light> light_map;
+	Dictionary<String, List<Light>> light_map;
 	List<string> tag_list;
 	ConcurrentQueue<Change> changes;
 
@@ -24,7 +24,7 @@ public class LightController : MonoBehaviour {
 	// init
 	private void init()
 	{
-		light_map = new Dictionary<String, Light>();
+		light_map = new Dictionary<String, List<Light>>();
 		tag_list = new List<String>();
 		changes = new ConcurrentQueue<Change>();
 
@@ -32,8 +32,13 @@ public class LightController : MonoBehaviour {
 		foreach(Light light in lights)
 		{
 			if ( light.tag != null && light.tag != "" ) {
-				light_map.Add(light.tag, light);
-				tag_list.Add(light.tag);
+				if ( light_map.ContainsKey(light.tag) ) {
+					List<Light> list = new List<Light>();
+					light_map.Add(light.tag, list);
+					tag_list.Add(light.tag);
+				}
+
+				light_map[light.tag].Add(light);
 			}
 		}
 	}
@@ -42,7 +47,10 @@ public class LightController : MonoBehaviour {
 	 * Returns the Tag for the light by the serial port mapping
 	 */
 	public String serialToTag(int serial) {
-		return tag_list[0];
+		int index = 0;
+		
+		index += Math.Max(0, serial * (Math.Min (light_map.Count, light_map.Count / SERIAL_MAX - 1)));
+		return tag_list[index];
 	}
 
 	/**
@@ -72,7 +80,9 @@ public class LightController : MonoBehaviour {
 		{
 			Change change = changes.Dequeue();
 
-			light_map[change.Tag].intensity = change.Intensity;
+			foreach(Light light in light_map[change.Tag] ) {
+				light.intensity = change.Intensity;
+			}
 		}
 	}
 }
