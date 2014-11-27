@@ -32,7 +32,7 @@ public class LightController : MonoBehaviour {
 		foreach(Light light in lights)
 		{
 			if ( light.tag != null && light.tag != "" ) {
-				if ( light_map.ContainsKey(light.tag) ) {
+				if ( !light_map.ContainsKey(light.tag) ) {
 					List<Light> list = new List<Light>();
 					light_map.Add(light.tag, list);
 					tag_list.Add(light.tag);
