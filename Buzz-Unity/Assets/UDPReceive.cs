@@ -60,7 +60,7 @@ public class UDPReceive : MonoBehaviour {
 		print("UDPSend.init()");
 		
 		// define port
-		port = 8051;
+		port = 30000;
 		
 		// status
 		print("Sending to 127.0.0.1 : "+port);
@@ -77,10 +77,9 @@ public class UDPReceive : MonoBehaviour {
 			new ThreadStart(ReceiveData));
 		receiveThread.IsBackground = true;
 		receiveThread.Start();
-		
 	}
 
-	private void ReceiveData()
+	private IEnumerator ReceiveData()
 	{
 		client = new UdpClient(port);
 		while (true)
@@ -95,15 +94,20 @@ public class UDPReceive : MonoBehaviour {
 				string text = Encoding.UTF8.GetString(data);
 				
 				// Den abgerufenen Text anzeigen.
-				print(">> " + text);
+				//print(">> " + text);
 				
 				// latest UDPpacket
 				lastReceivedUDPPacket=text;
 
 				// Set Light Intensity
 				//int serial = BitConverter.ToInt32(data, 0);
-				//String tag = lightController.serialToTag();
+				String potValue = lastReceivedUDPPacket.Split('p')[0];
+				int serial1 = Convert.ToInt32(potValue.Substring(1));
+				print(">> " + serial1);
 
+				String tag = lightController.serialToTag(serial1);
+				float intensity = lightController.serialToIntensity(serial1);
+				lightController.setLightIntensity(tag, intensity);
 			}
 			catch (Exception err)
 			{

@@ -56,7 +56,7 @@ public class LightController : MonoBehaviour {
 	/**
 	 * Set the light intensity
 	 */
-	public void setLightIntensity(String light_tag, int intensity) {
+	public void setLightIntensity(String light_tag, float intensity) {
 		light_map[light_tag].intensity = intensity;
 	}
 }
