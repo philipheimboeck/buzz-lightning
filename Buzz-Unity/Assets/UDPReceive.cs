@@ -23,43 +23,26 @@ using System.Net.Sockets;
 using System.Threading;
 
 public class UDPReceive : MonoBehaviour {
-	
-	// receiving Thread
+
+	// Light Controller
+	LightController lightController;
+
+	// Receiving Thread
 	Thread receiveThread;
 	
-	// udpclient object
+	// UDPClient object
 	UdpClient client;
-	
-	// public
-	// public string IP = "127.0.0.1"; default local
+
 	public int port; // define > init
 	
-	// infos
+	// Infos
 	public string lastReceivedUDPPacket="";
-	public string allReceivedUDPPackets=""; // clean up this from time to time!
-	
-	
-	// start from shell
-	private static void Main()
-	{
-		UDPReceive receiveObj=new UDPReceive();
-		receiveObj.init();
-		
-		string text="";
-		do
-		{
-			text = Console.ReadLine();
-		}
-		while(!text.Equals("exit"));
-	}
 
-	// start from unity3d
 	public void Start()
 	{
 		init();
 	}
-	
-	// OnGUI
+
 	void OnGUI()
 	{
 		Rect rectObj=new Rect(40,10,200,400);
@@ -68,11 +51,9 @@ public class UDPReceive : MonoBehaviour {
 		GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
 		        + "shell> nc -u 127.0.0.1 : "+port+" \n"
 		        + "\nLast Packet: \n"+ lastReceivedUDPPacket
-		        + "\n\nAll Messages: \n"+allReceivedUDPPackets
 		        ,style);
 	}
-	
-	// init
+
 	private void init()
 	{
 		// Endpunkt definieren, von dem die Nachrichten gesendet werden.
@@ -84,7 +65,8 @@ public class UDPReceive : MonoBehaviour {
 		// status
 		print("Sending to 127.0.0.1 : "+port);
 		print("Test-Sending to this Port: nc -u 127.0.0.1  "+port+"");
-		
+
+		lightController = FindObjectOfType(typeof(LightController)) as LightController;
 		
 		// ----------------------------
 		// Abhören
@@ -97,15 +79,12 @@ public class UDPReceive : MonoBehaviour {
 		receiveThread.Start();
 		
 	}
-	
-	// receive thread
-	private  void ReceiveData()
+
+	private void ReceiveData()
 	{
-		
 		client = new UdpClient(port);
 		while (true)
 		{
-			
 			try
 			{
 				// Bytes empfangen.
@@ -120,23 +99,16 @@ public class UDPReceive : MonoBehaviour {
 				
 				// latest UDPpacket
 				lastReceivedUDPPacket=text;
-				
-				// ....
-				allReceivedUDPPackets=allReceivedUDPPackets+text;
-				
+
+				// Set Light Intensity
+				//int serial = BitConverter.ToInt32(data, 0);
+				//String tag = lightController.serialToTag();
+
 			}
 			catch (Exception err)
 			{
 				print(err.ToString());
 			}
 		}
-	}
-	
-	// getLatestUDPPacket
-	// cleans up the rest
-	public string getLatestUDPPacket()
-	{
-		allReceivedUDPPackets="";
-		return lastReceivedUDPPacket;
 	}
 }
