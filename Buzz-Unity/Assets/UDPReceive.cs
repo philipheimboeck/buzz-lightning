@@ -33,7 +33,7 @@ public class UDPReceive : MonoBehaviour {
 	// UDPClient object
 	UdpClient client;
 
-	public int port; // define > init
+	public int port = 30000; // define > init
 	
 	// Infos
 	public string lastReceivedUDPPacket="";
@@ -60,7 +60,7 @@ public class UDPReceive : MonoBehaviour {
 		print("UDPSend.init()");
 		
 		// define port
-		port = 30000;
+		//port = 30000;
 		
 		// status
 		print("Sending to 127.0.0.1 : "+port);

@@ -31,7 +31,7 @@ public class LightController : MonoBehaviour {
 		Light[] lights = FindObjectsOfType(typeof(Light)) as Light[];
 		foreach(Light light in lights)
 		{
-			if ( light.tag != null && light.tag != "" ) {
+			if ( light.tag != null && light.tag != "" && light.tag != "Untagged" ) {
 				if ( !light_map.ContainsKey(light.tag) ) {
 					List<Light> list = new List<Light>();
 					light_map.Add(light.tag, list);
