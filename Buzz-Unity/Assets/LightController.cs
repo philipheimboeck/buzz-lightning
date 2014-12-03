@@ -14,6 +14,8 @@ public class LightController : MonoBehaviour {
 	List<string> tag_list;
 	ConcurrentQueue<Change> changes;
 
+	private Color default_color = new Color(0, 0, 0);
+
 	// Start from Unity 3D
 	public void Start()
 	{
@@ -28,6 +30,7 @@ public class LightController : MonoBehaviour {
 		tag_list = new List<String>();
 		changes = new ConcurrentQueue<Change>();
 
+		// Find all values
 		Light[] lights = FindObjectsOfType(typeof(Light)) as Light[];
 		foreach(Light light in lights)
 		{
@@ -39,8 +42,13 @@ public class LightController : MonoBehaviour {
 				}
 
 				light_map[light.tag].Add(light);
+
+				if ( default_color.Equals(new Color(0,0,0)) ) {
+					default_color = new Color(light.color.r, light.color.g, light.color.b, light.color.a);
+				}
 			}
 		}
+
 	}
 
 	/**
@@ -50,7 +58,29 @@ public class LightController : MonoBehaviour {
 		int index = 0;
 		
 		index += Math.Max(0,  Math.Min (light_map.Count - 1, serial * light_map.Count / SERIAL_MAX));
-		return tag_list[index];
+
+		// Get the tag
+		String tag = tag_list [index];
+
+		changeLight (tag);
+
+		// Return the tag
+		return tag;
+	}
+
+	private void changeLight(String tag) {
+		// Change the color of the lights
+		foreach (List<Light> lights in light_map.Values) {
+			foreach (Light light in lights) {
+				light.color = default_color;
+				light.intensity = 0;
+			}
+		}
+		foreach(Light light in light_map[tag]) {
+			//light.color = Color.red;
+			light.intensity = 4;
+		}
+		print ("Selected light: " + tag);
 	}
 
 	/**
@@ -82,6 +112,18 @@ public class LightController : MonoBehaviour {
 
 			foreach(Light light in light_map[change.Tag] ) {
 				light.intensity = change.Intensity;
+			}
+		}
+	}
+
+	// Input
+	public void OnGUI() {
+		if (Event.current != null && Event.current.type == EventType.KeyDown) {
+			// Convert to numeric value for convenience :)
+			int num = Event.current.keyCode - KeyCode.Alpha1;
+			
+			if ( num >= 0 && num < tag_list.Count ) {
+				changeLight(tag_list[num]);
 			}
 		}
 	}
