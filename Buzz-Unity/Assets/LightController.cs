@@ -14,8 +14,6 @@ public class LightController : MonoBehaviour {
 	List<string> tag_list;
 	ConcurrentQueue<Change> changes;
 
-	private Color default_color = new Color(0, 0, 0);
-
 	// Start from Unity 3D
 	public void Start()
 	{
@@ -42,10 +40,6 @@ public class LightController : MonoBehaviour {
 				}
 
 				light_map[light.tag].Add(light);
-
-				if ( default_color.Equals(new Color(0,0,0)) ) {
-					default_color = new Color(light.color.r, light.color.g, light.color.b, light.color.a);
-				}
 			}
 		}
 
@@ -72,15 +66,18 @@ public class LightController : MonoBehaviour {
 		// Change the color of the lights
 		foreach (List<Light> lights in light_map.Values) {
 			foreach (Light light in lights) {
-				light.color = default_color;
 				light.intensity = 0;
 			}
 		}
+		enableLight (tag);
+		print ("Selected light: " + tag);
+	}
+
+	private void enableLight(String tag) {
 		foreach(Light light in light_map[tag]) {
 			//light.color = Color.red;
-			light.intensity = 4;
+			light.intensity = 4; // Todo Get old intensity value
 		}
-		print ("Selected light: " + tag);
 	}
 
 	/**
@@ -105,25 +102,47 @@ public class LightController : MonoBehaviour {
 		changes.Enqueue (change);
 	}
 
+	public void setLightIntensityRelative(String light_tag, float delta_intensity) {
+		Change change = new Change ();
+		change.Tag = light_tag;
+		change.Intensity = light_map[light_tag][0].intensity + delta_intensity;
+		
+		changes.Enqueue (change);
+	}
+
 	public void Update() {
 		if (changes.Count > 0) 
 		{
 			Change change = changes.Dequeue();
 
 			foreach(Light light in light_map[change.Tag] ) {
-				light.intensity = change.Intensity;
+				light.intensity = Math.Max(INTENSITY_MIN, Math.Min(INTENSITY_MAX, change.Intensity));
 			}
 		}
 	}
 
 	// Input
+	private String selected_tag = ""; 
 	public void OnGUI() {
 		if (Event.current != null && Event.current.type == EventType.KeyDown) {
-			// Convert to numeric value for convenience :)
-			int num = Event.current.keyCode - KeyCode.Alpha1;
-			
-			if ( num >= 0 && num < tag_list.Count ) {
-				changeLight(tag_list[num]);
+
+			if ( Event.current.keyCode == KeyCode.Plus ) {
+				if ( selected_tag != "" ) setLightIntensityRelative(selected_tag, 0.5f);
+			} else if ( Event.current.keyCode == KeyCode.Minus ) {
+				if ( selected_tag != "" ) setLightIntensityRelative(selected_tag, -0.5f);
+			} else {
+
+				// Convert to numeric value for convenience :)
+				int num = Event.current.keyCode - KeyCode.Alpha1;
+				if ( num >= 0 && num < tag_list.Count ) {
+					changeLight(tag_list[num]);
+					selected_tag = tag_list[num];
+				} else if ( num == -1 ) {
+					// Enable all lights
+					foreach (String tag in light_map.Keys) {
+						enableLight(tag);
+					}
+				}
 			}
 		}
 	}
