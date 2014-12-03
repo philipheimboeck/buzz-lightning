@@ -74,10 +74,10 @@ public class LightController : MonoBehaviour {
 	}
 
 	private void enableLight(String tag) {
-		foreach(Light light in light_map[tag]) {
-			//light.color = Color.red;
-			light.intensity = 4; // Todo Get old intensity value
-		}
+		Change change = new Change();
+		change.Tag = tag;
+		change.Intensity = 4; // Todo Get old intensity value
+		changes.Enqueue (change);
 	}
 
 	/**
