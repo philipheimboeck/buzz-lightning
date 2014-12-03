@@ -64,10 +64,8 @@ public class LightController : MonoBehaviour {
 
 	private void changeLight(String tag) {
 		// Change the color of the lights
-		foreach (List<Light> lights in light_map.Values) {
-			foreach (Light light in lights) {
-				light.intensity = 0;
-			}
+		foreach (String t in tag_list) {
+			disableLight(t);
 		}
 		enableLight (tag);
 		print ("Selected light: " + tag);
@@ -77,6 +75,13 @@ public class LightController : MonoBehaviour {
 		Change change = new Change();
 		change.Tag = tag;
 		change.Intensity = 4; // Todo Get old intensity value
+		changes.Enqueue (change);
+	}
+
+	private void disableLight(String tag) {
+		Change change = new Change();
+		change.Tag = tag;
+		change.Intensity = 0;
 		changes.Enqueue (change);
 	}
 
