@@ -8,7 +8,7 @@ public class LightController : MonoBehaviour {
 	const float INTENSITY_MAX = 8;
 
 	const int SERIAL_MAX = 100;
-	const int SERIAL_MIN = 1;
+	const int SERIAL_MIN = 0;
 
 	Dictionary<String, List<Light>> light_map;
 	List<string> tag_list;
@@ -48,6 +48,7 @@ public class LightController : MonoBehaviour {
 	/**
 	 * Returns the Tag for the light by the serial port mapping
 	 */
+	private String last_tag = "";
 	public String serialToTag(int serial) {
 		int index = 0;
 		
@@ -56,7 +57,11 @@ public class LightController : MonoBehaviour {
 		// Get the tag
 		String tag = tag_list [index];
 
-		changeLight (tag);
+		if ( last_tag != tag) {
+			changeLight (tag);	
+		}
+		last_tag = tag;
+		
 
 		// Return the tag
 		return tag;
@@ -92,6 +97,7 @@ public class LightController : MonoBehaviour {
 		serial = Math.Max (SERIAL_MIN, Math.Min (serial, SERIAL_MAX));
 
 		float intensity = serial * (INTENSITY_MAX / SERIAL_MAX);
+		intensity = INTENSITY_MAX - intensity;
 
 		return Math.Max (INTENSITY_MIN, Math.Min (intensity, INTENSITY_MAX));
 	}

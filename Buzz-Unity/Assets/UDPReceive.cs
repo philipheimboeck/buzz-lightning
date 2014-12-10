@@ -82,6 +82,8 @@ public class UDPReceive : MonoBehaviour {
 	private void ReceiveData()
 	{
 		client = new UdpClient(port);
+		String tag = "";
+		float intensity = 0;
 		while (true)
 		{
 			try
@@ -95,7 +97,7 @@ public class UDPReceive : MonoBehaviour {
 
 				// Do nothing if it starts with '#' 
 				if (text.Trim()[0] == '#') {
-					return;
+					continue;	
 				}
 
 				// Den abgerufenen Text anzeigen.
@@ -106,18 +108,24 @@ public class UDPReceive : MonoBehaviour {
 
 				// Dirty: Set Light Intensity, Better: Observer Pattern or something...
 				//int serial = BitConverter.ToInt32(data, 0);
-				String distValue = lastReceivedUDPPacket.Split('p')[0];
-				int serial1 = Convert.ToInt32(distValue.Substring(1));
-				print(">> DistValue: " + serial1);
 
-				String potValue = lastReceivedUDPPacket.Split('p')[1];
-				int serial2 = Convert.ToInt32(potValue);
-				print(">> PotValue: " + serial2);
+				if (text.Contains("p")) {
+					int serial = Convert.ToInt32(text.Substring(1));
+					print(">> PotValue: " + serial);
 
-				String tag = lightController.serialToTag(serial2);
-				print (tag);
-				float intensity = lightController.serialToIntensity(serial1);
-				lightController.setLightIntensity(tag, intensity);
+					tag = lightController.serialToTag(serial);
+					print (">> tag: " + tag);	
+				}
+
+				if (text.Contains("d")) {
+					int serial = Convert.ToInt32(text.Substring(1));
+					print(">> DistValue: " + serial);			
+
+					intensity = lightController.serialToIntensity(serial);
+					print(" >> Intensity: " + intensity);
+					lightController.setLightIntensity(tag, intensity);		
+				}
+
 			}
 			catch (Exception err)
 			{
