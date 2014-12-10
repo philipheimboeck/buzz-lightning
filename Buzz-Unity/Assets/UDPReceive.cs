@@ -92,7 +92,12 @@ public class UDPReceive : MonoBehaviour {
 				
 				// Bytes mit der UTF8-Kodierung in das Textformat kodieren.
 				string text = Encoding.UTF8.GetString(data);
-				
+
+				// Do nothing if it starts with '#' 
+				if (text.Trim()[0] == '#') {
+					return;
+				}
+
 				// Den abgerufenen Text anzeigen.
 				//print(">> " + text);
 				
