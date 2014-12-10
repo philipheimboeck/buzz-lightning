@@ -1,8 +1,23 @@
-# Projekt Buzzlight
+# Projekt: Buzz Lightning
 
 ## Idee
 
+Die Idee für unser Projekt ist eine Lichtsteuerung, mit der man die Intensität mehrerer Lichter mithilfe eines Distanzsensors regeln kann.
 
+Dabei soll zwischen zwei Modis unterschieden werden:
++ Steuerung der Intensität mit absoluten Werten
++ Steuerung der Intensität relativ zu aktuellem Wert
+
+Außerdem wollen wir mithilfe eines Drehpotentiometer zwischen mehreren Lichtern auswählen können.
+
+Als Szenario haben wir eine reale Situation gewählt: Die Beleuchtung einer Wohnung mit mehreren Lichter. 
+Jedoch haben wir dieses Szenario etwas verändert, damit die Lichtsteurung besser wahrnehmbar ist: 
++ Überflüssige Texturen werden weggelassen
++ Es gibt keine Lichteinflüsse von außen
++ Die Lichter sind in einem rötlichen Farbton
+
+### Kriterien
+TODO
 
 ## Umsetzung
 
@@ -25,6 +40,14 @@ Dabei werden zuerst noch die Werte geglättet. Außerdem werden die Werte immer 
 
 ```c
 //Todo Some Code...
+```
+
+Außerdem war es uns wichtig, dass wir erkennen können ob die Eingabe gewollt oder ungewollt erfolgt ist.
+
+Um die Änderungen zu unterscheiden können, haben wir uns für ein Lock-Out System entschieden. Der AnwenderInnen können die Regelung beenden, sobald sie kurz in einer Position verharren. Das System sperrt dann diese Position für einige Sekunden bevor weitere Änderungen übernommen werden können.
+
+```c
+// Code
 ```
 
 #### Java Serial2UDP
@@ -53,15 +76,15 @@ private void ReceiveData() {
 			// Bytes mit der UTF8-Kodierung in das Textformat kodieren.
 			string text = Encoding.UTF8.GetString(data);
 				
-			// Den abgerufenen Text anzeigen.
-			print(">> " + text);
+			String distValue = lastReceivedUDPPacket.Split('p')[0];
+			int serial1 = Convert.ToInt32(distValue.Substring(1));
 				
-			// latest UDPpacket
-			lastReceivedUDPPacket=text;
-
-			// Set Light Intensity
-			//int serial = BitConverter.ToInt32(data, 0);
-			//String tag = lightController.serialToTag();
+			String potValue = lastReceivedUDPPacket.Split('p')[1];
+			int serial2 = Convert.ToInt32(potValue);
+				
+			String tag = lightController.serialToTag(serial2);
+			float intensity = lightController.serialToIntensity(serial1);
+			lightController.setLightIntensity(tag, intensity);
 		}
 		catch (Exception err)
 		{
@@ -81,14 +104,30 @@ Die Lichtintensität wird ebenfalls anhand von Eingabedaten berechnet. Dabei wir
 
 `Intensity = Sensor_Value * (INTENSITY_MAX / SENSOR_MAX)`
 
-Für die Steuerung stehen daher drei Funktionen zur Verfügung:
+Für die Steuerung stehen daher vier Funktionen zur Verfügung:
++ **serialToTag** - rechnet den Sensorwert in einen Lichttag um für die Auswahl der Lichter
++ **serialToIntensity** - rechnet den Sensorwert in eine Intensität um
++ **setLightIntensity** - setzt die Intensität der Lichter mit dem Tag
++ **setLightIntensityRelative** - setzt die Intensität der Lichter relativ
+
 
 ```c#
 /**
  * Returns the Tag for the light by the serial port mapping
  */
 public String serialToTag(int serial) {
-	return tag_list[0];
+	int index = 0;
+	
+	index += Math.Max(0,  Math.Min (light_map.Count - 1, serial * light_map.Count / SERIAL_MAX));
+
+	// Get the tag
+	String tag = tag_list [index];
+
+	// Highlight the selected light
+	changeLight (tag);
+
+	// Return the tag
+	return tag;
 }
 
 /**
@@ -105,11 +144,44 @@ public float serialToIntensity(int serial) {
 /**
  * Set the light intensity
  */
-public void setLightIntensity(String light_tag, int intensity) {
-	light_map[light_tag].intensity = intensity;
+public void setLightIntensity(String light_tag, float intensity) {
+	Change change = new Change ();
+	change.Tag = light_tag;
+	change.Intensity = intensity;
+
+	changes.Enqueue (change);
+}
+
+/*
+ * Set the light intensity relative
+ */
+public void setLightIntensityRelative(String light_tag, float delta_intensity) {
+	Change change = new Change ();
+	change.Tag = light_tag;
+	change.Intensity = light_map^light_tag][0].intensity + delta_intensity;
+	
+	changes.Enqueue (change);
 }
 ```
 
-### Modelle
+Wie oben zu sehen ist, werden die Änderungen nicht direkt übernommen sondern in eine Changes-Queue gespeichert.
+Diese Queue wird dann innerhalb der Update Funktion abgeabeitet.
+
+```c#
+public void Update() {
+	// If there are changes to do, do it..
+	if (changes.Count > 0) 
+	{
+		Change change = changes.Dequeue();
+
+		// Change the light intensities
+		foreach(Light light in light_map[change.Tag] ) {
+			light.intensity = Math.Max(INTENSITY_MIN, Math.Min(INTENSITY_MAX, change.Intensity));
+		}
+	}
+}
+```
+
+### 3D-Modelle
 
 ## Ergebnis

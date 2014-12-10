@@ -107,6 +107,9 @@ public class LightController : MonoBehaviour {
 		changes.Enqueue (change);
 	}
 
+	/*
+	 * Set the light intensity relative
+	 */
 	public void setLightIntensityRelative(String light_tag, float delta_intensity) {
 		Change change = new Change ();
 		change.Tag = light_tag;
@@ -116,10 +119,12 @@ public class LightController : MonoBehaviour {
 	}
 
 	public void Update() {
+		// If there are changes to do, do it..
 		if (changes.Count > 0) 
 		{
 			Change change = changes.Dequeue();
 
+			// Change the light intensities
 			foreach(Light light in light_map[change.Tag] ) {
 				light.intensity = Math.Max(INTENSITY_MIN, Math.Min(INTENSITY_MAX, change.Intensity));
 			}
