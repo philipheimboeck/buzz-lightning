@@ -80,9 +80,12 @@ void Sending() {
     // reset counter
     countLock = 0;
     SendData();
+    
+    String g = "g";
+    g.concat((prevValue - currentValue));
+    Serial.println(g);
   } else {
     countLock++;
-    
     // wait until user stayed for 2s in same position
     if(countLock > countThreshold) {
       lightStateMachine.transitionTo(Lock);
