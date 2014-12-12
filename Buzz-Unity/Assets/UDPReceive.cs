@@ -45,13 +45,22 @@ public class UDPReceive : MonoBehaviour {
 
 	void OnGUI()
 	{
-		Rect rectObj=new Rect(40,10,200,400);
-		GUIStyle style = new GUIStyle();
-		style.alignment = TextAnchor.UpperLeft;
-		GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
-		        + "shell> nc -u 127.0.0.1 : "+port+" \n"
-		        + "\nLast Packet: \n"+ lastReceivedUDPPacket
-		        ,style);
+		// Draw mode and stuff
+//		Rect rectObj=new Rect(40,10,200,100);
+//
+//		GUIStyle style = new GUIStyle();
+//		style.alignment = TextAnchor.UpperLeft;
+//		
+//		Texture2D texture = new Texture2D (1, 1);
+//		texture.SetPixel (0, 0, new Color(255,255,255, 0.5f));
+//		texture.Apply ();
+//
+//		style.normal.background = texture;
+//
+//		GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
+//		        + "shell> nc -u 127.0.0.1 : "+port+" \n"
+//		        + "\nLast Packet: \n"+ lastReceivedUDPPacket
+//		        ,style);
 	}
 
 	private void init()
@@ -83,7 +92,7 @@ public class UDPReceive : MonoBehaviour {
 	{
 		client = new UdpClient(port);
 		String tag = "";
-		float intensity = 0;
+
 		while (true)
 		{
 			try
@@ -117,13 +126,23 @@ public class UDPReceive : MonoBehaviour {
 					print (">> tag: " + tag);	
 				}
 
-				if (text.Contains("d")) {
+				// Absolute D
+				if (!lightController.RelativeMode && text.Contains("d")) {
 					int serial = Convert.ToInt32(text.Substring(1));
+					float intensity = 0;
 					print(">> DistValue: " + serial);			
 
 					intensity = lightController.serialToIntensity(serial);
 					print(" >> Intensity: " + intensity);
-					lightController.setLightIntensity(tag, intensity);		
+					lightController.setLightIntensity(tag, intensity);
+				// Relative G
+				} else if ( lightController.RelativeMode && text.Contains("g")) {
+					int serial = Convert.ToInt32(text.Substring(1));
+					float intensity = 0;
+					print(">> Relative Value: " + serial);
+
+					intensity = lightController.serialToIntensity(serial);
+					lightController.setLightIntensity(tag, intensity);
 				}
 
 			}
