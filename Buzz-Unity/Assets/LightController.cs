@@ -5,7 +5,7 @@ using AssemblyCSharp;
 
 public class LightController : MonoBehaviour {
 	const float INTENSITY_MIN = 0;
-	const float INTENSITY_MAX = 8;
+	const float INTENSITY_MAX = 4;
 
 	const int SERIAL_MAX = 100;
 	const int SERIAL_MIN = 0;
@@ -40,6 +40,9 @@ public class LightController : MonoBehaviour {
 		foreach(Light light in lights)
 		{
 			if ( light.tag != null && light.tag != "" && light.tag != "Untagged" ) {
+				// Set light intensity
+				light.intensity = INTENSITY_MAX;
+
 				if ( !light_map.ContainsKey(light.tag) ) {
 					List<Light> list = new List<Light>();
 					light_map.Add(light.tag, list);
