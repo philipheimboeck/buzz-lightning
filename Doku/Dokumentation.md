@@ -5,19 +5,33 @@
 Die Idee für unser Projekt ist eine Lichtsteuerung, mit der man die Intensität mehrerer Lichter mithilfe eines Distanzsensors regeln kann.
 
 Dabei soll zwischen zwei Modis unterschieden werden:
+
 + Steuerung der Intensität mit absoluten Werten
 + Steuerung der Intensität relativ zu aktuellem Wert
 
 Außerdem wollen wir mithilfe eines Drehpotentiometer zwischen mehreren Lichtern auswählen können.
 
-Als Szenario haben wir eine reale Situation gewählt: Die Beleuchtung einer Wohnung mit mehreren Lichter. 
-Jedoch haben wir dieses Szenario etwas verändert, damit die Lichtsteurung besser wahrnehmbar ist: 
+Als Szenario haben wir eine reale Situation gewählt: Die Beleuchtung einer Wohnung mit mehreren Lichter. Jedoch haben wir dieses Szenario etwas verändert, damit die Lichtsteurung besser wahrnehmbar ist: 
+
 + Überflüssige Texturen werden weggelassen
 + Es gibt keine Lichteinflüsse von außen
 + Die Lichter sind in einem rötlichen Farbton
 
 ### Kriterien
-TODO
+Wir haben uns folgende Kriterien gesetzt die wir mit Buzz Lightning erreichen und erfüllen wollen. Dies gibt auch einen kleinen Ausblick bzw. Begründung für die weiter folgenden Schritte während der Entwicklung. 
+
++ Einfachheit der Bedienung
+	+ Anwender soll verschiedene Lichtquellen schnell anpassen und steuern können
+	+ Ungewollte Angaben abfangen durch ein definiertes Start und Ende der Eingabe
++ Umsetzung der Lichtsteuerung
+	+ keine Sprunghafte Änderung des Lichtes
+	+ Natürliches Verhalten von Bewegung zu Steuerung des Lichtes
++ Verständlichkeit für Anwender 
+	+ Ist das eigentliche Bedienkonzept verständlich?
+	+ Wirkungsverhalten verständlich? Was passiert bei einem bestimmten Eingabeverhalten?
+	+ Schnelle Änderungen durch schnellere Bewegungen
++ Praxisbezug
+	+ Gibt es Anwendungsgebiete in der diese Steuerung klare Vorteile gegenüber einer herkömmlichen Steuerung hat? 
 
 ## Umsetzung
 
@@ -185,3 +199,24 @@ public void Update() {
 ### 3D-Modelle
 
 ## Ergebnis
+Wir haben im ersten Schritt unsere eigenen Kriterien bewertet und mit dem Ergebnis des Projektes verglichen und.
+
+### Vor und Nachteile einer absoluten und relativen Steuerung
+**Absolute Steuerung**  
++ es gibt pro Steuerungsvorgang nur ein Lock-Zyklus  
++ die Steuerung erlaubt ein leichtes Ein- und Ausschalten der Lichtquelle  
+- nur ein begrenzte Genauigkeit beim Dimmen einer Lichtquelle
+
+**Relative Steuerung**  
++ im Gegensatz zur absoluten Steuerung ist durch die Aufteilung in mehrere Schritte der Regulierungsbereich kleiner und somit ist ein genaueres adjustieren möglich   
+- erzeugt dadurch aber mehrere Lock-Zyklen pro Steuerungsvorgang und somit längere Wartezeiten für den Anwender   
+- Ein- und Ausschalten kann mitunter 3-4 Steuerungszyklen benötigen
+
+### Benutzerakzeptanz
+Um die gesetzten Kriterien repräsentativ zu bewerten haben wir einen Versuch mit 10 Personen durchgeführt. Wir haben dazu vor allem die Kriterien in Bezug auf Einfachheit und Verständlichkeit der Anwender betrachtet. Anhand von dessen Reaktionen und Rückmeldungen ist folgende Analyse enstanden. 
+
+**Einfachheit der Bedienung**  
+Die Geschwindigkeit der Schaltung ist vor allem im relativen Modus etwas schwerfällig und kann länger dauern als ein gewöhnlicher Dimmer-Taster. Im Fall des absoluten Modus sind die Warte-Zwischenschritte nicht nötig. 
+
+**Verständlichkeit**   
+Die Schaltung ist nach einer kurzen Erklärung für alle Probanden verständlich und die Logik "verdunkeln durch Nähe" und "erhellen durch Ferne" 
