@@ -1,2 +1,0 @@
-/var/lock --> drwxrwxrwx   3 root       wheel       102  5 Nov 15:39 lock 
-Rechte setzen!
