@@ -271,6 +271,7 @@ Wichtig sind die sogenannten "Collider" in Unity. Wenn diese bei bestimmten Obje
 
 ## Ergebnis
 
+![BlackBox](buzz.jpg)
 
 ## Anwendung
 
