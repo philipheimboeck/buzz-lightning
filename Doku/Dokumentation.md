@@ -1,5 +1,14 @@
 # Projekt: Buzz Lightning
 
++ Idee
+	+ Kriterien
++ Umsetzung
+	+ Controlleraufbau 
+	+ Software
+	+ 3D-Modelle
++ Ergebnis
++ Anwendung
+
 ## Idee
 
 Die Idee für unser Projekt ist eine Lichtsteuerung, mit der man die Intensität mehrerer Lichter mithilfe eines Distanzsensors regeln kann.
@@ -184,4 +193,24 @@ public void Update() {
 
 ### 3D-Modelle
 
+Nachdem der erste Prototyp direkt in Unity erstellt wurde, sodass die Eingabegeräte mit Lichtern getestet werden konnten, wurde über ein mögliches Szenario überlegt. Die Entscheidung fiel auf eine komplette Wohnungsszene.  
+Es wurde abgeklärt, dass es möglich ist, eine Szene aus dem Internet zu nutzen. Daher wurde diese [Vorlage](http://www.cgtrader.com/free-3d-models/architectural-interior/office-commercial/steampunk-office) gefunden.
+
+Aufbauend darauf, wurde die Szene im Maya noch bearbeitet und einige Objekte *reversed*, sodass die Oberfläche auf beiden Seiten in Unity sichtbar sind. Nach dem Export von Maya und dem Import in Unity, wurden die Lichter, Leuchtungseffekte und einige Texturen hinzugefügt.
+
+![Scene](Scene.jpg)
+
+Wichtig sind die sogenannten "Collider" in Unity. Wenn diese bei bestimmten Objekten nicht hinzugefügt werden, kann sich der "CharacterController" durch die Objekte hindurch bewegen bzw. fallen. Bei vorgefertigten Models könnten deshalb Problem, entstehen, wenn Objekte gruppiert wurden. Bei gruppierten Objekten, kann zwar der "Collider" hinzugefügt werden, jedoch sind die Kollisionskanten nicht am Objekt anliegend und es könnten Probleme beim Bewegen des Charakters entstehen.
+
 ## Ergebnis
+
+
+## Anwendung
+
+Wenn der Arduino vollständig nach dem oben stehenden Schaltplan konfiguriert ist, muss der Arduino angesteckt werden. Um Daten auslesen zu können, muss zuvor die Installationsanleitung von "Serial2UDP" durchgearbeitet werden. Danach kann das Programm gestartet werden.
+
+```bash
+sudo java Serial2UDP <serialPort=?/dev/cu.usbmodemfd121> <baudRate=?9600> <IPAddress=?127.0.0.1> <Port=?30000>
+```
+
+Wenn Daten ausgelesen werden, kann nun das Programm, unter Windows mit *"Buzz.exe"* oder unter Mac mit *"Buzz.dmg"*, gestartet werden.
